@@ -3,7 +3,7 @@ const { processAll, closeConnection } = require("./dbSelected");
 
 let iterationCount = 0;
 const maxIterations = 10; // Set the maximum number of iterations
-const interval = "*/70 * * * * *"; // Schedule to run every 10 seconds
+const interval = "*/60 * * * * *"; // Schedule to run every 10 seconds
 
 function cronJob() {
 	console.log("Running process to pull data from api to database...");
