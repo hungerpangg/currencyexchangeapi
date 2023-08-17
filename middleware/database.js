@@ -1,10 +1,10 @@
 const mysql = require("mysql2");
 
 const dbConfig = {
-	host: "localhost",
+	host: process.env.HOST,
 	user: "root",
-	password: "password123",
-	database: "currency_exchange",
+	password: process.env.MYSQL_PASSWORD,
+	database: process.env.MYSQL_DATABASE,
 };
 
 function connectDatabase(req, res, next) {
