@@ -5,6 +5,7 @@ Takes in the following query param:
 - base: "fiat" | "crypto"
 Expected response:
 GET /rates?base=crypto
+
 {
    "BTC": {
     "USD": "28541.11500000000000000",
@@ -23,7 +24,8 @@ GET /rates?base=crypto
   }
 }
 
-GET /rates?base=fiat
+GET /rates?base=fiat  
+
 {
   "USD": {
     "BTC": "0.00003582174455120",
@@ -62,7 +64,7 @@ target_currency - the target currency. The API should return the amount of targe
 start - the starting Unix timestamp in UTC, in milliseconds.
 end - (Optional) The ending Unix timestamp in UTC (in milliseconds). If undefined, it assume the current time.
 
-Sample Response (JSON)
+Sample Response (JSON):
 
 {
   results: \[
