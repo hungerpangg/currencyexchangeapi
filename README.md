@@ -6,7 +6,6 @@ Takes in the following query param:
 Expected response:
 GET /rates?base=crypto
 {  
-
    "BTC": {
     "USD": "28541.11500000000000000",
     "EUR": "26241.25000000000000000",
