@@ -5,8 +5,9 @@ Takes in the following query param:
 - base: "fiat" | "crypto"
 Expected response:
 GET /rates?base=crypto
-{
-  "BTC": {
+{  
+
+   "BTC": {
     "USD": "28541.11500000000000000",
     "EUR": "26241.25000000000000000",
     "SGD": "38841.54632127000000000"
