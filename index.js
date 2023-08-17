@@ -20,9 +20,10 @@ app.get("/exchange-rates", (req, res) => {
 		WHERE (base = '${baseCurrencies[0]}' 
 		OR base = '${baseCurrencies[1]}'
 		OR base = '${baseCurrencies[2]}')
-		AND CEIL(UNIX_TIMESTAMP(entry_date) / 60) * 60  = 
-		(SELECT CEIL(UNIX_TIMESTAMP(MAX(entry_date)) / 60) * 60 
+		AND FLOOR(UNIX_TIMESTAMP(entry_date) / 60) * 60  = 
+		(SELECT FLOOR(UNIX_TIMESTAMP(MAX(entry_date)) / 60) * 60 
 		FROM crypto)`;
+		console.log(query);
 		connection.query(query, (error, results) => {
 			if (error) {
 				console.error("Error executing query:", error);
@@ -48,10 +49,19 @@ app.get("/exchange-rates", (req, res) => {
 
 app.get("/historical-rates", (req, res) => {
 	const connection = req.db;
-	const base_currency = req.query.base_currency;
-	const target_currency = req.query.target_currency;
-	const start = parseInt(req.query.start);
-	const end = parseInt(req.query.end);
+	var base_currency = req.query.base_currency;
+	var target_currency = req.query.target_currency;
+	var start = parseInt(req.query.start) / 1000;
+	if (start < 1692179820) {
+		return res.send("Start date is before any records were found.");
+	}
+	var end = parseInt(req.query.end) / 1000;
+	if (end > Date.now() / 1000) {
+		return res.send("End date cannot be in the future.");
+	}
+	if (!end) {
+		end = Date.now() / 1000;
+	}
 	let incrementTimestamp = [];
 	for (let timestamp = start; timestamp <= end; timestamp += 100) {
 		console.log(timestamp);
@@ -67,12 +77,15 @@ app.get("/historical-rates", (req, res) => {
 	SELECT rate, entry_date, floor(UNIX_TIMESTAMP(entry_date) / 60) * 60, UNIX_TIMESTAMP(entry_date) from crypto
 	where base='${base_currency}' and currency='${target_currency}'
 	and FLOOR(UNIX_TIMESTAMP(entry_date) / 60) * 60 in (select floor(\`${incrementTimestamp[0]}\` / 60) * 60 from increment)`;
-	console.log(query);
 	connection.query(query, (error, results) => {
 		if (error) {
 			console.error("Error executing query:", error);
 		} else {
-			console.log("Query results:", results);
+			// console.log("Query results:", results);
+			historicalData = results.map((row, index) => {
+				return { timestamp: incrementTimestamp[index] * 1000, value: row.rate };
+			});
+			res.status(200).json({ results: historicalData });
 		}
 	});
 });
@@ -82,15 +95,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 });
-
-// WITH increment AS (
-// 	SELECT 1692179850 AS num
-// 	UNION
-// 	SELECT 1692179950
-// 	UNION
-// 	SELECT 1692180050
-// 	UNION
-// 	SELECT 1692180150)
-// 	SELECT rate, entry_date from currency_exchange.crypto
-// 	where base='USD' and currency='ETH'
-// 	and floor(UNIX_TIMESTAMP(entry_date) / 60) * 60 in (select floor(num/60)*60 from increment);
