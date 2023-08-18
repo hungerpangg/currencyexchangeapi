@@ -92,7 +92,7 @@ Sample Response (JSON):
 Run `node cron.js` to start pulling data from the API and storing it the database. Interval in which the file pulls from API can be customized (currently set at 60 seconds).  
 Run `npm start` separately to make API available, where it will pull the latest data or historical data from database.
 
-* for historical-rates API, cannot pull before earliest date that currency data is stored in database. Earliest date must be set in the file for code to work.
+* for historical-rates API, cannot pull before earliest date that currency data is stored in database. Earliest date must be set in the file (have been set at UTC 1692179820 seconds for development purposes).
 
 ### `npm start`
 Runs the app in the development mode.
